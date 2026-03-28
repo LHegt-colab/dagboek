@@ -206,13 +206,13 @@ function SchemaCard({ entry, modes, onEdit, onDelete }) {
               </span>
               <button
                 onClick={() => onEdit(entry)}
-                className="ml-1 p-1 rounded hover:bg-[#C97D3A]/20 text-[#C97D3A] opacity-0 group-hover:opacity-100 transition-opacity"
+                className="ml-1 p-1 rounded hover:bg-[#C97D3A]/20 text-[#C97D3A]/60 hover:text-[#C97D3A] transition-colors"
               >
                 <Edit3 size={12} />
               </button>
               <button
                 onClick={() => onDelete(entry)}
-                className="p-1 rounded hover:bg-red-500/20 text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"
+                className="p-1 rounded hover:bg-red-500/20 text-red-400/60 hover:text-red-400 transition-colors"
               >
                 <Trash2 size={12} />
               </button>

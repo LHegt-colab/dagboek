@@ -270,7 +270,7 @@ function RelationshipCard({ entry, onEdit, onDelete }) {
         <p className="text-xs text-[#F5ECD7]/30 mt-1">{formatRelative(entry.createdAt)}</p>
       </div>
 
-      <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
+      <div className="flex gap-1 transition-opacity flex-shrink-0">
         <Button variant="ghost" size="icon" className="btn-ghost w-8 h-8" onClick={() => onEdit(entry)}>
           <Pencil className="w-3.5 h-3.5" />
         </Button>

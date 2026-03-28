@@ -64,25 +64,33 @@ function EntryCard({ entry, onClick, onDelete }) {
   const preview = entry.content?.slice(0, 180) + (entry.content?.length > 180 ? '…' : '')
 
   return (
-    <div
-      className="glass-card-hover p-5 cursor-pointer group relative"
-      onClick={() => onClick(entry)}
-    >
+    <div className="glass-card-hover p-5 group relative">
       <div className="flex items-start justify-between gap-3 mb-2">
-        <h3 className="font-playfair text-[#F5ECD7] text-base font-semibold leading-snug flex-1 line-clamp-1">
+        <h3
+          className="font-playfair text-[#F5ECD7] text-base font-semibold leading-snug flex-1 line-clamp-1 cursor-pointer"
+          onClick={() => onClick(entry)}
+        >
           {entry.title || 'Naamloos'}
         </h3>
         <div className="flex items-center gap-1 shrink-0">
-          <span className="text-xs text-[#F5ECD7]/40 flex items-center gap-1">
+          <span className="text-xs text-[#F5ECD7]/40 flex items-center gap-1 mr-1">
             <Calendar size={11} />
             {formatRelative(entry.createdAt)}
           </span>
           <button
-            className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded hover:bg-red-500/20 text-red-400"
+            className="p-1.5 rounded hover:bg-[#C97D3A]/20 text-[#C97D3A]/60 hover:text-[#C97D3A] transition-colors"
+            onClick={() => onClick(entry)}
+            title="Bewerken"
+          >
+            <Edit3 size={14} />
+          </button>
+          <button
+            className="p-1.5 rounded hover:bg-red-500/20 text-red-400/60 hover:text-red-400 transition-colors"
             onClick={(e) => {
               e.stopPropagation()
               onDelete(entry)
             }}
+            title="Verwijderen"
           >
             <Trash2 size={14} />
           </button>
@@ -90,12 +98,12 @@ function EntryCard({ entry, onClick, onDelete }) {
       </div>
 
       {entry.tags?.length > 0 && (
-        <div className="flex flex-wrap gap-1 mb-2">
+        <div className="flex flex-wrap gap-1 mb-2" onClick={() => onClick(entry)}>
           {entry.tags.map((tag) => (
             <Badge
               key={tag}
               variant="outline"
-              className="text-[10px] px-2 py-0 border-[#C97D3A]/40 text-[#C97D3A] bg-[#C97D3A]/5"
+              className="text-[10px] px-2 py-0 border-[#C97D3A]/40 text-[#C97D3A] bg-[#C97D3A]/5 cursor-pointer"
             >
               {tag}
             </Badge>
@@ -103,12 +111,12 @@ function EntryCard({ entry, onClick, onDelete }) {
         </div>
       )}
 
-      <p className="text-[#F5ECD7]/55 text-sm leading-relaxed line-clamp-3">{preview}</p>
-
-      <ChevronRight
-        size={16}
-        className="absolute right-4 bottom-4 text-[#F5ECD7]/20 group-hover:text-[#C97D3A] transition-colors"
-      />
+      <p
+        className="text-[#F5ECD7]/55 text-sm leading-relaxed line-clamp-3 cursor-pointer"
+        onClick={() => onClick(entry)}
+      >
+        {preview}
+      </p>
     </div>
   )
 }

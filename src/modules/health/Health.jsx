@@ -176,7 +176,7 @@ function SportTab() {
                   <p className="text-xs text-[#F5ECD7]/40 mt-1 truncate">{entry.notes}</p>
                 )}
               </div>
-              <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="flex gap-1 transition-opacity">
                 <Button variant="ghost" size="icon" className="btn-ghost w-8 h-8" onClick={() => handleEdit(entry)}>
                   <Pencil className="w-3.5 h-3.5" />
                 </Button>
@@ -369,7 +369,7 @@ function VoedingTab() {
                 <p className="text-[#F5ECD7] mt-1 text-sm line-clamp-2">{entry.description}</p>
                 <p className="text-xs text-[#F5ECD7]/40 mt-1">{formatRelative(entry.createdAt)}</p>
               </div>
-              <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
+              <div className="flex gap-1 transition-opacity flex-shrink-0">
                 <Button variant="ghost" size="icon" className="btn-ghost w-8 h-8" onClick={() => handleEdit(entry)}>
                   <Pencil className="w-3.5 h-3.5" />
                 </Button>
@@ -566,7 +566,7 @@ function SlaapTab() {
                   <p className="text-xs text-[#F5ECD7]/40 mt-0.5 truncate">{entry.notes}</p>
                 )}
               </div>
-              <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="flex gap-1 transition-opacity">
                 <Button variant="ghost" size="icon" className="btn-ghost w-8 h-8" onClick={() => handleEdit(entry)}>
                   <Pencil className="w-3.5 h-3.5" />
                 </Button>
@@ -770,7 +770,7 @@ function SpanningTab() {
                 )}
                 <p className="text-xs text-[#F5ECD7]/40 mt-1">{formatRelative(entry.createdAt)}</p>
               </div>
-              <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
+              <div className="flex gap-1 transition-opacity flex-shrink-0">
                 <Button variant="ghost" size="icon" className="btn-ghost w-8 h-8" onClick={() => handleEdit(entry)}>
                   <Pencil className="w-3.5 h-3.5" />
                 </Button>

@@ -259,7 +259,7 @@ function TriggerCard({ entry, onEdit, onDelete }) {
           )}
         </div>
 
-        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
+        <div className="flex gap-1 transition-opacity flex-shrink-0">
           <Button variant="ghost" size="icon" className="btn-ghost w-7 h-7" onClick={() => onEdit(entry)}>
             <Pencil className="w-3 h-3" />
           </Button>

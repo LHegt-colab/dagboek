@@ -96,16 +96,18 @@ function MoodCard({ entry, onEdit, onDelete }) {
               <Calendar size={11} />
               {formatRelative(entry.createdAt)}
             </span>
-            <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="flex gap-1">
               <button
                 onClick={() => onEdit(entry)}
-                className="p-1 rounded hover:bg-[#C97D3A]/20 text-[#C97D3A]"
+                className="p-1.5 rounded hover:bg-[#C97D3A]/20 text-[#C97D3A]/60 hover:text-[#C97D3A] transition-colors"
+                title="Bewerken"
               >
                 <Edit3 size={13} />
               </button>
               <button
                 onClick={() => onDelete(entry)}
-                className="p-1 rounded hover:bg-red-500/20 text-red-400"
+                className="p-1.5 rounded hover:bg-red-500/20 text-red-400/60 hover:text-red-400 transition-colors"
+                title="Verwijderen"
               >
                 <Trash2 size={13} />
               </button>
