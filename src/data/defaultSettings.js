@@ -1,0 +1,33 @@
+export const defaultSettings = {
+  theme: 'dark',
+  language: 'nl',
+  moodScale: { min: -5, max: 5, labels: { '-5': 'Heel slecht', '-3': 'Slecht', '0': 'Neutraal', '3': 'Goed', '5': 'Uitstekend' } },
+  emotionTags: [
+    'Blij', 'Dankbaar', 'Kalm', 'Energiek', 'Gemotiveerd', 'Trots', 'Liefdevol', 'Hoopvol',
+    'Verdrietig', 'Angstig', 'Boos', 'Gefrustreerd', 'Moe', 'Overweldigd', 'Eenzaam', 'Teleurgesteld',
+    'Onzeker', 'Schuldig', 'Beschaamd', 'Verward', 'Nieuwsgierig', 'Geïnspireerd', 'Verbonden', 'Ontspannen',
+  ],
+  schemaModes: [
+    { id: 'vulnerable_child', label: 'Kwetsbaar Kind', color: '#60A5FA', description: 'Verdriet, angst, verlatenheid' },
+    { id: 'angry_child', label: 'Boos Kind', color: '#F87171', description: 'Woede, frustratie, rebellie' },
+    { id: 'impulsive_child', label: 'Impulsief Kind', color: '#FBBF24', description: 'Impulsiviteit, korte termijn denken' },
+    { id: 'happy_child', label: 'Blij Kind', color: '#4ADE80', description: 'Vreugde, speelsheid, verbinding' },
+    { id: 'compliant_surrender', label: 'Onderdanige Volgzaamheid', color: '#A78BFA', description: 'Toegeven, pleasen' },
+    { id: 'detached_protector', label: 'Afstandelijke Beschermer', color: '#94A3B8', description: 'Emotionele afsluiting' },
+    { id: 'overcompensator', label: 'Overcompensator', color: '#FB923C', description: 'Controlerend, perfectionistisch' },
+    { id: 'punitive_parent', label: 'Bestraffende Ouder', color: '#F43F5E', description: 'Zelfkritiek, straf' },
+    { id: 'demanding_parent', label: 'Veeleisende Ouder', color: '#EC4899', description: 'Hoge eisen, kritiek' },
+    { id: 'healthy_adult', label: 'Gezonde Volwassene', color: '#C97D3A', description: 'Evenwicht, compassie, rationaliteit' },
+  ],
+  journalPrompts: [
+    'Wat voelde ik vandaag het sterkst?',
+    'Wat maakte vandaag de moeite waard?',
+    'Welke gedachte bleef terugkomen?',
+    'Hoe behandelde ik mezelf vandaag?',
+    'Wat wil ik morgen anders doen?',
+    'Wie of wat gaf me energie vandaag?',
+    'Wat was moeilijk en hoe ging ik ermee om?',
+  ],
+  notifications: { morningCheckin: true, eveningCheckin: true, weeklyReport: true },
+  dataRetentionDays: 365,
+}
