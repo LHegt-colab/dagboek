@@ -8,12 +8,15 @@ export const formatTime = (dateStr) =>
   format(parseISO(dateStr), 'HH:mm', { locale: nl })
 
 export const formatRelative = (dateStr) => {
-  const date = parseISO(dateStr)
-  if (isToday(date)) return 'Vandaag'
-  if (isYesterday(date)) return 'Gisteren'
-  const diff = differenceInDays(new Date(), date)
-  if (diff < 7) return `${diff} dagen geleden`
-  return format(date, 'd MMM yyyy', { locale: nl })
+  if (!dateStr) return ''
+  try {
+    const date = parseISO(dateStr)
+    if (isToday(date)) return 'Vandaag'
+    if (isYesterday(date)) return 'Gisteren'
+    const diff = differenceInDays(new Date(), date)
+    if (diff < 7) return `${diff} dagen geleden`
+    return format(date, 'd MMM yyyy', { locale: nl })
+  } catch { return '' }
 }
 
 export const formatDateLabel = (dateStr) =>

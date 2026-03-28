@@ -75,7 +75,7 @@ function EntryCard({ entry, onClick, onDelete }) {
         <div className="flex items-center gap-1 shrink-0">
           <span className="text-xs text-[#F5ECD7]/40 flex items-center gap-1">
             <Calendar size={11} />
-            {formatRelative(entry.date)}
+            {formatRelative(entry.createdAt)}
           </span>
           <button
             className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded hover:bg-red-500/20 text-red-400"
@@ -317,7 +317,7 @@ export default function Journal() {
   // Filtered entries
   const filtered = useMemo(() => {
     const q = search.toLowerCase().trim()
-    if (!q) return [...(journal ?? [])].sort((a, b) => new Date(b.date) - new Date(a.date))
+    if (!q) return [...(journal ?? [])].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
     return [...(journal ?? [])]
       .filter(
         (e) =>
@@ -325,20 +325,15 @@ export default function Journal() {
           e.content?.toLowerCase().includes(q) ||
           e.tags?.some((t) => t.toLowerCase().includes(q))
       )
-      .sort((a, b) => new Date(b.date) - new Date(a.date))
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
   }, [journal, search])
 
   const handleSave = (data) => {
     if (data.id) {
-      updateJournalEntry({ ...data, updatedAt: new Date().toISOString() })
+      updateJournalEntry(data.id, data)
       toast({ title: 'Entry bijgewerkt', description: data.title || 'Naamloos' })
     } else {
-      addJournalEntry({
-        ...data,
-        id: crypto.randomUUID(),
-        date: new Date().toISOString(),
-        createdAt: new Date().toISOString(),
-      })
+      addJournalEntry(data)
       toast({ title: 'Entry toegevoegd', description: data.title || 'Naamloos' })
     }
     setAddModalOpen(false)
