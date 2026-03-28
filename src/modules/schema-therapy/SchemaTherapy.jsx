@@ -29,49 +29,49 @@ import {
 const DEFAULT_MODES = [
   {
     id: 'vulnerable-child',
-    name: 'Kwetsbaar kind',
+    label: 'Kwetsbaar kind',
     description: 'Gevoelens van angst, verdriet, schaamte of verlatenheid.',
     color: '#60a5fa',
   },
   {
     id: 'angry-child',
-    name: 'Boos kind',
+    label: 'Boos kind',
     description: 'Intense woede of frustratie als reactie op niet-vervulde behoeften.',
     color: '#f87171',
   },
   {
     id: 'impulsive-child',
-    name: 'Impulsief kind',
+    label: 'Impulsief kind',
     description: 'Handelen vanuit directe impulsen zonder nadenken.',
     color: '#fb923c',
   },
   {
     id: 'punishing-parent',
-    name: 'Straffende ouder',
+    label: 'Straffende ouder',
     description: 'Harde zelfkritiek en zelfbestraffing.',
     color: '#a855f7',
   },
   {
     id: 'demanding-parent',
-    name: 'Eisende ouder',
+    label: 'Eisende ouder',
     description: 'Hoge, onrealistische eisen aan jezelf stellen.',
     color: '#ec4899',
   },
   {
     id: 'detached-protector',
-    name: 'Afstandelijke beschermer',
+    label: 'Afstandelijke beschermer',
     description: 'Emotionele afsluiting ter bescherming.',
     color: '#94a3b8',
   },
   {
     id: 'compliant-surrenderer',
-    name: 'Gehoorzame onderwerper',
+    label: 'Gehoorzame onderwerper',
     description: 'Toegeven aan anderen om conflict te vermijden.',
     color: '#34d399',
   },
   {
     id: 'healthy-adult',
-    name: 'Gezonde volwassene',
+    label: 'Gezonde volwassene',
     description: 'Gebalanceerde, zorgzame en rationele modus.',
     color: '#C97D3A',
   },
@@ -545,7 +545,7 @@ export default function SchemaTherapy() {
 
   const handleSave = (data) => {
     if (data.id) {
-      updateSchemaEntry({ ...data, updatedAt: new Date().toISOString() })
+      updateSchemaEntry(data.id, { ...data, updatedAt: new Date().toISOString() })
       toast({ title: 'Schema-moment bijgewerkt' })
     } else {
       addSchemaEntry({

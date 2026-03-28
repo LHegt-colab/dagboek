@@ -554,7 +554,7 @@ export default function CheckIn() {
 
   const handleSave = (data) => {
     if (data.id) {
-      updateCheckin({ ...data, updatedAt: new Date().toISOString() })
+      updateCheckin(data.id, { ...data, updatedAt: new Date().toISOString() })
       toast({ title: 'Check-in bijgewerkt' })
     } else {
       addCheckin({

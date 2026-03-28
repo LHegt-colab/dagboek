@@ -317,7 +317,7 @@ export default function MoodTracker() {
 
   const handleSave = (data) => {
     if (data.id) {
-      updateMood({ ...data, updatedAt: new Date().toISOString() })
+      updateMood(data.id, { ...data, updatedAt: new Date().toISOString() })
       toast({ title: 'Stemming bijgewerkt' })
     } else {
       addMood({
