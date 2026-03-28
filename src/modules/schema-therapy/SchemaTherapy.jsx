@@ -197,12 +197,12 @@ function SchemaCard({ entry, modes, onEdit, onDelete }) {
               }}
               className="text-[11px] px-2 py-0 font-medium"
             >
-              {mode?.name ?? 'Onbekend'}
+              {mode?.label ?? 'Onbekend'}
             </Badge>
             <div className="flex items-center gap-1">
               <span className="text-xs text-[#F5ECD7]/35 flex items-center gap-1">
                 <Calendar size={10} />
-                {formatRelative(entry.date)}
+                {formatRelative(entry.createdAt)}
               </span>
               <button
                 onClick={() => onEdit(entry)}
@@ -312,7 +312,7 @@ function ModeSelectorGrid({ modes, value, onChange }) {
                 className="text-sm font-medium leading-tight"
                 style={{ color: selected ? mode.color : '#F5ECD7' }}
               >
-                {mode.name}
+                {mode.label}
               </p>
               <p className="text-xs text-[#F5ECD7]/45 mt-0.5 leading-snug">
                 {mode.description}
@@ -518,7 +518,7 @@ export default function SchemaTherapy() {
     : DEFAULT_MODES
 
   const sortedEntries = useMemo(
-    () => [...(schema ?? [])].sort((a, b) => new Date(b.date) - new Date(a.date)),
+    () => [...(schema ?? [])].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)),
     [schema]
   )
 
@@ -597,7 +597,7 @@ export default function SchemaTherapy() {
                 style={{ backgroundColor: topMode.color }}
               />
               <span className="text-[#F5ECD7]/70 text-sm">
-                Meest: <span className="text-[#F5ECD7] font-medium">{topMode.name}</span>
+                Meest: <span className="text-[#F5ECD7] font-medium">{topMode.label}</span>
               </span>
             </div>
           )}
@@ -628,7 +628,7 @@ export default function SchemaTherapy() {
                         className="w-2 h-2 rounded-full shrink-0"
                         style={{ backgroundColor: mode.color }}
                       />
-                      {mode.name}
+                      {mode.label}
                       {modeCounts[mode.id] && (
                         <span className="text-xs text-[#F5ECD7]/40">
                           ({modeCounts[mode.id]})

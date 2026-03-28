@@ -458,7 +458,7 @@ function RecentRow({ entry, onEdit, onDelete }) {
             <div className="flex items-center gap-2">
               <span className="text-xs text-[#F5ECD7]/35 flex items-center gap-1">
                 <Calendar size={10} />
-                {formatRelative(entry.date)}
+                {formatRelative(entry.createdAt)}
               </span>
               <button
                 onClick={() => onEdit(entry)}
@@ -537,7 +537,7 @@ export default function CheckIn() {
   const [deleteTarget, setDeleteTarget] = useState(null)
 
   const sorted = useMemo(
-    () => [...(checkins ?? [])].sort((a, b) => new Date(b.date) - new Date(a.date)),
+    () => [...(checkins ?? [])].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)),
     [checkins]
   )
 

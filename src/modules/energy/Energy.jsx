@@ -288,7 +288,7 @@ function EnergyCard({ entry, onEdit, onDelete }) {
               <Clock className="w-3 h-3" /> {formatMinutes(entry.durationMinutes)}
             </span>
           )}
-          <span>{formatRelative(entry.date)}</span>
+          <span>{formatRelative(entry.createdAt)}</span>
         </div>
 
         {entry.description && (
@@ -372,7 +372,7 @@ export default function Energy() {
   const [defaultType, setDefaultType] = useState('Flow Moment')
 
   const entries = useMemo(() =>
-    [...(energy || [])].sort((a, b) => new Date(b.date) - new Date(a.date)),
+    [...(energy || [])].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)),
     [energy]
   )
 

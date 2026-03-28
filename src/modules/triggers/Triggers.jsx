@@ -240,7 +240,7 @@ function TriggerCard({ entry, onEdit, onDelete }) {
                 {intensityLabel(entry.emotionIntensity)} ({entry.emotionIntensity}/10)
               </Badge>
             )}
-            <span className="text-xs text-[#F5ECD7]/40 ml-auto">{formatRelative(entry.date)}</span>
+            <span className="text-xs text-[#F5ECD7]/40 ml-auto">{formatRelative(entry.createdAt)}</span>
           </div>
           <p className="text-sm text-[#F5ECD7] mt-1.5 line-clamp-2">{entry.situation}</p>
 
@@ -299,7 +299,7 @@ export default function Triggers() {
   const [emotionFilter, setEmotionFilter] = useState('all')
 
   const entries = useMemo(() =>
-    [...(triggers || [])].sort((a, b) => new Date(b.date) - new Date(a.date)),
+    [...(triggers || [])].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)),
     [triggers]
   )
 

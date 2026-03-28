@@ -267,7 +267,7 @@ function RelationshipCard({ entry, onEdit, onDelete }) {
         {entry.notes && (
           <p className="text-xs text-[#F5ECD7]/40 mt-1.5 line-clamp-1">{entry.notes}</p>
         )}
-        <p className="text-xs text-[#F5ECD7]/30 mt-1">{formatRelative(entry.date)}</p>
+        <p className="text-xs text-[#F5ECD7]/30 mt-1">{formatRelative(entry.createdAt)}</p>
       </div>
 
       <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
@@ -291,7 +291,7 @@ export default function Relationships() {
   const [editing, setEditing] = useState(null)
 
   const entries = useMemo(() =>
-    [...(relationships || [])].sort((a, b) => new Date(b.date) - new Date(a.date)),
+    [...(relationships || [])].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)),
     [relationships]
   )
 
