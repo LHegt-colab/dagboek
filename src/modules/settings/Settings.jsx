@@ -18,7 +18,7 @@ import { cn } from '@/lib/utils'
 import { format } from 'date-fns'
 
 export default function Settings() {
-  const { settings, updateSettings, resetAllData, seedSampleData, importData } = useAppStore()
+  const { settings, updateSettings, resetAllData, importData } = useAppStore()
   const { toast } = useToast()
   const [resetConfirm, setResetConfirm] = useState(false)
   const [newEmotion, setNewEmotion] = useState('')
@@ -84,12 +84,6 @@ export default function Settings() {
     resetAllData()
     setResetConfirm(false)
     toast({ title: 'Data verwijderd', description: 'Alle data is gewist.', variant: 'destructive' })
-  }
-
-  const handleReseed = () => {
-    resetAllData()
-    setTimeout(() => { seedSampleData() }, 100)
-    toast({ title: 'Voorbeelddata geladen', description: '14 dagen aan voorbeelddata toegevoegd.' })
   }
 
   return (
@@ -203,12 +197,6 @@ export default function Settings() {
                 <input ref={fileInputRef} type="file" accept=".json" className="hidden" onChange={handleImport} />
               </>
             }
-          />
-          <ActionCard
-            title="Voorbeelddata laden"
-            description="Laad 14 dagen voorbeelddata opnieuw"
-            icon={RefreshCw}
-            action={<Button variant="outline" size="sm" onClick={handleReseed}><RefreshCw className="w-3.5 h-3.5" />Herlaad</Button>}
           />
           <ActionCard
             title="Reset instellingen"

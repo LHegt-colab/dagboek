@@ -1,7 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { v4 as uuidv4 } from 'uuid'
-import { generateSampleData } from '../data/sampleData'
 import { defaultSettings } from '../data/defaultSettings'
 
 const now = () => new Date().toISOString()
@@ -29,15 +28,6 @@ const useAppStore = create(
       energy: [],
       checkins: [],
       settings: defaultSettings,
-      seeded: false,
-
-      // Seed with sample data on first load
-      seedSampleData: () => {
-        if (get().seeded) return
-        const data = generateSampleData()
-        set({ ...data, seeded: true })
-      },
-
       // ── Journal ──────────────────────────────
       addJournalEntry: (data) => set((s) => ({ journal: [makeEntry(data), ...s.journal] })),
       updateJournalEntry: (id, data) => set((s) => ({
@@ -119,23 +109,25 @@ const useAppStore = create(
       updateSettings: (data) => set((s) => ({ settings: { ...s.settings, ...data } })),
 
       // ── Reset ─────────────────────────────
-      resetAllData: () => set({
-        journal: [], moods: [], schema: [],
-        healthSport: [], healthNutrition: [], healthSleep: [], healthTension: [],
-        triggers: [], relationships: [], energy: [], checkins: [],
-        seeded: false,
-      }),
+      resetAllData: () => {
+        localStorage.removeItem('dagboek-store-v2')
+        set({
+          journal: [], moods: [], schema: [],
+          healthSport: [], healthNutrition: [], healthSleep: [], healthTension: [],
+          triggers: [], relationships: [], energy: [], checkins: [],
+        })
+      },
       importData: (data) => set(data),
     }),
     {
-      name: 'dagboek-store',
+      name: 'dagboek-store-v2',
       partialize: (s) => ({
         journal: s.journal, moods: s.moods, schema: s.schema,
         healthSport: s.healthSport, healthNutrition: s.healthNutrition,
         healthSleep: s.healthSleep, healthTension: s.healthTension,
         triggers: s.triggers, relationships: s.relationships,
         energy: s.energy, checkins: s.checkins,
-        settings: s.settings, seeded: s.seeded,
+        settings: s.settings,
       }),
     }
   )

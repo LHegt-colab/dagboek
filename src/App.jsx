@@ -1,7 +1,6 @@
-import { lazy, Suspense, useEffect } from 'react'
+import { lazy, Suspense } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Layout from '@/components/layout/Layout'
-import useAppStore from '@/store/useAppStore'
 
 // Lazy-load all route-level modules
 const Dashboard = lazy(() => import('@/modules/dashboard/Dashboard'))
@@ -25,12 +24,6 @@ function PageLoader() {
 }
 
 export default function App() {
-  const { seedSampleData, seeded } = useAppStore()
-
-  useEffect(() => {
-    if (!seeded) seedSampleData()
-  }, [seeded, seedSampleData])
-
   return (
     <BrowserRouter>
       <Suspense fallback={<PageLoader />}>
