@@ -6,10 +6,10 @@ import { getLastNDays, getDayKey } from '@/utils/dateHelpers'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip)
 
-export default function SleepChart({ sleepData, days = 14, height = 120 }) {
+export default function SleepChart({ sleepData = [], days = 14, height = 120 }) {
   const dayKeys = getLastNDays(days)
   const grouped = {}
-  sleepData.forEach((s) => { grouped[getDayKey(parseISO(s.createdAt))] = s.hours })
+  ;(sleepData || []).forEach((s) => { grouped[getDayKey(parseISO(s.createdAt))] = s.hours })
 
   const labels = dayKeys.map((d) => format(d, 'd MMM', { locale: nl }))
   const data = dayKeys.map((d) => grouped[getDayKey(d)] ?? 0)

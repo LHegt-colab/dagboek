@@ -38,7 +38,7 @@ function SportModal({ open, onClose, initial, onSave }) {
 
   const handleSave = () => {
     if (!form.activityName.trim()) return
-    onSave({ ...form, date: form.date || new Date().toISOString() })
+    onSave({ ...form })
     onClose()
   }
 
@@ -128,7 +128,7 @@ function SportTab() {
   }
   const handleAdd = () => { setEditing(null); setModalOpen(true) }
 
-  const entries = [...(healthSport || [])].sort((a, b) => new Date(b.date) - new Date(a.date))
+  const entries = [...(healthSport || [])].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
 
   return (
     <div className="space-y-4">
@@ -161,7 +161,7 @@ function SportTab() {
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="font-medium text-[#F5ECD7]">{entry.activityName}</span>
+                  <span className="font-medium text-[#F5ECD7]">{entry.activityName || entry.activity}</span>
                   <Badge className={cn('text-xs border', intensityColor(entry.intensity))}>
                     {entry.intensity}
                   </Badge>
@@ -170,7 +170,7 @@ function SportTab() {
                   <span className="flex items-center gap-1">
                     <Clock className="w-3 h-3" /> {entry.durationMinutes} min
                   </span>
-                  <span>{formatRelative(entry.date)}</span>
+                  <span>{formatRelative(entry.createdAt)}</span>
                 </div>
                 {entry.notes && (
                   <p className="text-xs text-[#F5ECD7]/40 mt-1 truncate">{entry.notes}</p>
@@ -235,7 +235,7 @@ function VoedingModal({ open, onClose, initial, onSave }) {
 
   const handleSave = () => {
     if (!form.description.trim()) return
-    onSave({ ...form, date: form.date || new Date().toISOString() })
+    onSave({ ...form })
     onClose()
   }
 
@@ -328,7 +328,7 @@ function VoedingTab() {
   const handleDelete = (id) => { deleteNutritionEntry(id); toast({ title: 'Verwijderd' }) }
   const handleAdd = () => { setEditing(null); setModalOpen(true) }
 
-  const entries = [...(healthNutrition || [])].sort((a, b) => new Date(b.date) - new Date(a.date))
+  const entries = [...(healthNutrition || [])].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
 
   return (
     <div className="space-y-4">
@@ -367,7 +367,7 @@ function VoedingTab() {
                   </Badge>
                 </div>
                 <p className="text-[#F5ECD7] mt-1 text-sm line-clamp-2">{entry.description}</p>
-                <p className="text-xs text-[#F5ECD7]/40 mt-1">{formatRelative(entry.date)}</p>
+                <p className="text-xs text-[#F5ECD7]/40 mt-1">{formatRelative(entry.createdAt)}</p>
               </div>
               <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
                 <Button variant="ghost" size="icon" className="btn-ghost w-8 h-8" onClick={() => handleEdit(entry)}>
@@ -420,7 +420,7 @@ function SlaapModal({ open, onClose, initial, onSave }) {
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }))
 
   const handleSave = () => {
-    onSave({ ...form, date: form.date || new Date().toISOString() })
+    onSave({ ...form })
     onClose()
   }
 
@@ -515,12 +515,12 @@ function SlaapTab() {
   const handleDelete = (id) => { deleteSleepEntry(id); toast({ title: 'Verwijderd' }) }
   const handleAdd = () => { setEditing(null); setModalOpen(true) }
 
-  const entries = [...(healthSleep || [])].sort((a, b) => new Date(b.date) - new Date(a.date))
+  const entries = [...(healthSleep || [])].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
 
   return (
     <div className="space-y-4">
       {entries.length > 0 && (
-        <SleepChart data={entries} />
+        <SleepChart sleepData={entries} />
       )}
 
       <div className="flex items-center justify-between">
@@ -561,7 +561,7 @@ function SlaapTab() {
                     </span>
                   )}
                 </div>
-                <p className="text-xs text-[#F5ECD7]/40 mt-1">{formatRelative(entry.date)}</p>
+                <p className="text-xs text-[#F5ECD7]/40 mt-1">{formatRelative(entry.createdAt)}</p>
                 {entry.notes && (
                   <p className="text-xs text-[#F5ECD7]/40 mt-0.5 truncate">{entry.notes}</p>
                 )}
@@ -619,7 +619,7 @@ function TensionModal({ open, onClose, initial, onSave }) {
   }
 
   const handleSave = () => {
-    onSave({ ...form, date: form.date || new Date().toISOString() })
+    onSave({ ...form })
     onClose()
   }
 
@@ -716,7 +716,7 @@ function SpanningTab() {
   const handleDelete = (id) => { deleteTensionEntry(id); toast({ title: 'Verwijderd' }) }
   const handleAdd = () => { setEditing(null); setModalOpen(true) }
 
-  const entries = [...(healthTension || [])].sort((a, b) => new Date(b.date) - new Date(a.date))
+  const entries = [...(healthTension || [])].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
 
   return (
     <div className="space-y-4">
@@ -768,7 +768,7 @@ function SpanningTab() {
                     ))}
                   </div>
                 )}
-                <p className="text-xs text-[#F5ECD7]/40 mt-1">{formatRelative(entry.date)}</p>
+                <p className="text-xs text-[#F5ECD7]/40 mt-1">{formatRelative(entry.createdAt)}</p>
               </div>
               <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
                 <Button variant="ghost" size="icon" className="btn-ghost w-8 h-8" onClick={() => handleEdit(entry)}>

@@ -6,10 +6,10 @@ import { getLastNDays, getDayKey } from '@/utils/dateHelpers'
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip)
 
-export default function EnergyChart({ checkins, days = 14, height = 120 }) {
+export default function EnergyChart({ checkins = [], days = 14, height = 120 }) {
   const dayKeys = getLastNDays(days)
   const grouped = {}
-  checkins.forEach((c) => {
+  ;(checkins || []).forEach((c) => {
     if (c.energyLevel) {
       const k = getDayKey(parseISO(c.createdAt))
       grouped[k] = [...(grouped[k] || []), c.energyLevel]

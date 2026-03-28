@@ -6,10 +6,10 @@ import { getLastNDays, getDayKey } from '@/utils/dateHelpers'
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Filler)
 
-export default function MoodChart({ moods, days = 14, height = 120 }) {
+export default function MoodChart({ moods = [], days = 14, height = 120 }) {
   const dayKeys = getLastNDays(days)
   const grouped = {}
-  moods.forEach((m) => { const k = getDayKey(parseISO(m.createdAt)); grouped[k] = [...(grouped[k] || []), m.score] })
+  ;(moods || []).forEach((m) => { const k = getDayKey(parseISO(m.createdAt)); grouped[k] = [...(grouped[k] || []), m.score] })
 
   const labels = dayKeys.map((d) => format(d, 'd MMM', { locale: nl }))
   const data = dayKeys.map((d) => {
