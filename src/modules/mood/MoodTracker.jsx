@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 import { Textarea } from '@/components/ui/textarea'
@@ -92,26 +92,10 @@ function MoodCard({ entry, onEdit, onDelete }) {
         {/* Content */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between gap-2 mb-1">
-            <span className="text-xs text-[#F5ECD7]/40 flex items-center gap-1">
+            <span className="text-xs text-[#F5ECD7]/60 flex items-center gap-1">
               <Calendar size={11} />
               {formatRelative(entry.createdAt)}
             </span>
-            <div className="flex gap-1">
-              <button
-                onClick={() => onEdit(entry)}
-                className="p-1.5 rounded hover:bg-[#C97D3A]/20 text-[#C97D3A]/60 hover:text-[#C97D3A] transition-colors"
-                title="Bewerken"
-              >
-                <Edit3 size={13} />
-              </button>
-              <button
-                onClick={() => onDelete(entry)}
-                className="p-1.5 rounded hover:bg-red-500/20 text-red-400/60 hover:text-red-400 transition-colors"
-                title="Verwijderen"
-              >
-                <Trash2 size={13} />
-              </button>
-            </div>
           </div>
 
           <p className="text-xs font-medium text-[#F5ECD7]/70 mb-1">{info.label}</p>
@@ -131,9 +115,27 @@ function MoodCard({ entry, onEdit, onDelete }) {
           )}
 
           {entry.note && (
-            <p className="text-xs text-[#F5ECD7]/50 line-clamp-2">{entry.note}</p>
+            <p className="text-xs text-[#F5ECD7]/65 line-clamp-2">{entry.note}</p>
           )}
         </div>
+      </div>
+
+      {/* Action buttons */}
+      <div className="flex gap-2 mt-3 pt-3 border-t border-[#F5ECD7]/[0.07]">
+        <button
+          onClick={() => onEdit(entry)}
+          className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-[#C97D3A]/10 text-[#C97D3A] text-sm font-medium hover:bg-[#C97D3A]/20 active:bg-[#C97D3A]/30 transition-colors"
+        >
+          <Edit3 size={15} />
+          Bewerken
+        </button>
+        <button
+          onClick={() => onDelete(entry)}
+          className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-red-500/10 text-red-400 text-sm font-medium hover:bg-red-500/20 active:bg-red-500/30 transition-colors"
+        >
+          <Trash2 size={15} />
+          Verwijderen
+        </button>
       </div>
     </div>
   )
@@ -150,11 +152,13 @@ function MoodModal({ open, onClose, entry, onSave, emotionTags = [] }) {
   const [note, setNote] = useState(entry?.note ?? '')
 
   // Sync on open
-  useState(() => {
-    setScore(entry?.score ?? 0)
-    setEmotions(entry?.emotions ?? [])
-    setNote(entry?.note ?? '')
-  }, [entry, open])
+  useEffect(() => {
+    if (open) {
+      setScore(entry?.score ?? 0)
+      setEmotions(entry?.emotions ?? [])
+      setNote(entry?.note ?? '')
+    }
+  }, [entry?.id, open])
 
   const toggleEmotion = (tag) => {
     setEmotions((prev) =>

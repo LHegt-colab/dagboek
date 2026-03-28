@@ -296,13 +296,22 @@ function EnergyCard({ entry, onEdit, onDelete }) {
         )}
       </div>
 
-      <div className="flex gap-1 transition-opacity flex-shrink-0">
-        <Button variant="ghost" size="icon" className="btn-ghost w-8 h-8" onClick={() => onEdit(entry)}>
-          <Pencil className="w-3.5 h-3.5" />
-        </Button>
-        <Button variant="ghost" size="icon" className="btn-ghost w-8 h-8 text-red-400 hover:text-red-300" onClick={() => onDelete(entry.id)}>
-          <Trash2 className="w-3.5 h-3.5" />
-        </Button>
+      </div>
+      <div className="flex gap-2 mt-3 pt-3 border-t border-[#F5ECD7]/[0.07]">
+        <button
+          className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-[#C97D3A]/10 text-[#C97D3A] text-sm font-medium hover:bg-[#C97D3A]/20 active:bg-[#C97D3A]/30 transition-colors"
+          onClick={() => onEdit(entry)}
+        >
+          <Pencil className="w-4 h-4" />
+          Bewerken
+        </button>
+        <button
+          className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-red-500/10 text-red-400 text-sm font-medium hover:bg-red-500/20 active:bg-red-500/30 transition-colors"
+          onClick={() => onDelete(entry.id)}
+        >
+          <Trash2 className="w-4 h-4" />
+          Verwijderen
+        </button>
       </div>
     </div>
   )

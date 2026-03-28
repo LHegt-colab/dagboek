@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 import { Textarea } from '@/components/ui/textarea'
@@ -199,24 +199,10 @@ function SchemaCard({ entry, modes, onEdit, onDelete }) {
             >
               {mode?.label ?? 'Onbekend'}
             </Badge>
-            <div className="flex items-center gap-1">
-              <span className="text-xs text-[#F5ECD7]/35 flex items-center gap-1">
+            <span className="text-xs text-[#F5ECD7]/55 flex items-center gap-1">
                 <Calendar size={10} />
                 {formatRelative(entry.createdAt)}
               </span>
-              <button
-                onClick={() => onEdit(entry)}
-                className="ml-1 p-1 rounded hover:bg-[#C97D3A]/20 text-[#C97D3A]/60 hover:text-[#C97D3A] transition-colors"
-              >
-                <Edit3 size={12} />
-              </button>
-              <button
-                onClick={() => onDelete(entry)}
-                className="p-1 rounded hover:bg-red-500/20 text-red-400/60 hover:text-red-400 transition-colors"
-              >
-                <Trash2 size={12} />
-              </button>
-            </div>
           </div>
 
           {entry.thought && (
@@ -270,6 +256,24 @@ function SchemaCard({ entry, modes, onEdit, onDelete }) {
             </>
           )}
         </div>
+      </div>
+
+      {/* Action buttons */}
+      <div className="flex gap-2 mt-3 pt-3 border-t border-[#F5ECD7]/[0.07]">
+        <button
+          onClick={() => onEdit(entry)}
+          className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-[#C97D3A]/10 text-[#C97D3A] text-sm font-medium hover:bg-[#C97D3A]/20 active:bg-[#C97D3A]/30 transition-colors"
+        >
+          <Edit3 size={15} />
+          Bewerken
+        </button>
+        <button
+          onClick={() => onDelete(entry)}
+          className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-red-500/10 text-red-400 text-sm font-medium hover:bg-red-500/20 active:bg-red-500/30 transition-colors"
+        >
+          <Trash2 size={15} />
+          Verwijderen
+        </button>
       </div>
     </div>
   )
@@ -338,14 +342,16 @@ function SchemaModal({ open, onClose, entry, onSave, modes }) {
   const [behavior, setBehavior] = useState(entry?.behavior ?? '')
   const [healthyAdult, setHealthyAdult] = useState(entry?.healthyAdult ?? '')
 
-  useState(() => {
-    setModeId(entry?.modeId ?? modes[0]?.id ?? '')
-    setIntensity(entry?.intensity ?? 5)
-    setThought(entry?.thought ?? '')
-    setFeeling(entry?.feeling ?? '')
-    setBehavior(entry?.behavior ?? '')
-    setHealthyAdult(entry?.healthyAdult ?? '')
-  }, [entry, open])
+  useEffect(() => {
+    if (open) {
+      setModeId(entry?.modeId ?? modes[0]?.id ?? '')
+      setIntensity(entry?.intensity ?? 5)
+      setThought(entry?.thought ?? '')
+      setFeeling(entry?.feeling ?? '')
+      setBehavior(entry?.behavior ?? '')
+      setHealthyAdult(entry?.healthyAdult ?? '')
+    }
+  }, [entry?.id, open])
 
   const selectedMode = modes.find((m) => m.id === modeId)
 

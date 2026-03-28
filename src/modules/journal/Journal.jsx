@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
@@ -64,59 +64,61 @@ function EntryCard({ entry, onClick, onDelete }) {
   const preview = entry.content?.slice(0, 180) + (entry.content?.length > 180 ? '…' : '')
 
   return (
-    <div className="glass-card-hover p-5 group relative">
-      <div className="flex items-start justify-between gap-3 mb-2">
-        <h3
-          className="font-playfair text-[#F5ECD7] text-base font-semibold leading-snug flex-1 line-clamp-1 cursor-pointer"
-          onClick={() => onClick(entry)}
-        >
-          {entry.title || 'Naamloos'}
-        </h3>
-        <div className="flex items-center gap-1 shrink-0">
-          <span className="text-xs text-[#F5ECD7]/40 flex items-center gap-1 mr-1">
+    <div className="glass-card-hover p-4 group relative">
+      {/* Clickable content area */}
+      <div
+        className="cursor-pointer"
+        onClick={() => onClick(entry)}
+      >
+        <div className="flex items-center gap-2 mb-1">
+          <span className="text-xs text-[#F5ECD7]/55 flex items-center gap-1">
             <Calendar size={11} />
             {formatRelative(entry.createdAt)}
           </span>
-          <button
-            className="p-1.5 rounded hover:bg-[#C97D3A]/20 text-[#C97D3A]/60 hover:text-[#C97D3A] transition-colors"
-            onClick={() => onClick(entry)}
-            title="Bewerken"
-          >
-            <Edit3 size={14} />
-          </button>
-          <button
-            className="p-1.5 rounded hover:bg-red-500/20 text-red-400/60 hover:text-red-400 transition-colors"
-            onClick={(e) => {
-              e.stopPropagation()
-              onDelete(entry)
-            }}
-            title="Verwijderen"
-          >
-            <Trash2 size={14} />
-          </button>
         </div>
+        <h3 className="font-playfair text-[#F5ECD7] text-base font-semibold leading-snug mb-2">
+          {entry.title || 'Naamloos'}
+        </h3>
+
+        {entry.tags?.length > 0 && (
+          <div className="flex flex-wrap gap-1 mb-2">
+            {entry.tags.map((tag) => (
+              <Badge
+                key={tag}
+                variant="outline"
+                className="text-[10px] px-2 py-0 border-[#C97D3A]/40 text-[#C97D3A] bg-[#C97D3A]/5"
+              >
+                {tag}
+              </Badge>
+            ))}
+          </div>
+        )}
+
+        <p className="text-[#F5ECD7]/70 text-sm leading-relaxed line-clamp-2">
+          {preview}
+        </p>
       </div>
 
-      {entry.tags?.length > 0 && (
-        <div className="flex flex-wrap gap-1 mb-2" onClick={() => onClick(entry)}>
-          {entry.tags.map((tag) => (
-            <Badge
-              key={tag}
-              variant="outline"
-              className="text-[10px] px-2 py-0 border-[#C97D3A]/40 text-[#C97D3A] bg-[#C97D3A]/5 cursor-pointer"
-            >
-              {tag}
-            </Badge>
-          ))}
-        </div>
-      )}
-
-      <p
-        className="text-[#F5ECD7]/55 text-sm leading-relaxed line-clamp-3 cursor-pointer"
-        onClick={() => onClick(entry)}
-      >
-        {preview}
-      </p>
+      {/* Action buttons — always visible, large touch targets */}
+      <div className="flex gap-2 mt-3 pt-3 border-t border-[#F5ECD7]/[0.07]">
+        <button
+          className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-[#C97D3A]/10 text-[#C97D3A] text-sm font-medium hover:bg-[#C97D3A]/20 active:bg-[#C97D3A]/30 transition-colors"
+          onClick={() => onClick(entry)}
+        >
+          <Edit3 size={15} />
+          Bewerken
+        </button>
+        <button
+          className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-red-500/10 text-red-400 text-sm font-medium hover:bg-red-500/20 active:bg-red-500/30 transition-colors"
+          onClick={(e) => {
+            e.stopPropagation()
+            onDelete(entry)
+          }}
+        >
+          <Trash2 size={15} />
+          Verwijderen
+        </button>
+      </div>
     </div>
   )
 }
@@ -140,10 +142,10 @@ function EntryModal({ open, onClose, entry, onSave, prompts = [] }) {
     setPrompt('')
   }
 
-  // Keep form in sync when modal opens with a new entry
-  useState(() => {
-    resetForm(entry)
-  }, [entry, open])
+  // Keep form in sync when modal opens with a different entry
+  useEffect(() => {
+    if (open) resetForm(entry)
+  }, [entry?.id, open])
 
   const handleRandomPrompt = () => {
     if (!prompts.length) return

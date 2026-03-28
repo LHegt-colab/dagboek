@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
@@ -178,12 +178,14 @@ function MorningModal({ open, onClose, entry, onSave }) {
   const [mood, setMood] = useState(entry?.mood ?? 0)
   const [energy, setEnergy] = useState(entry?.energy ?? 5)
 
-  useState(() => {
-    setIntention(entry?.intention ?? '')
-    setGratitude(entry?.gratitude ?? ['', '', ''])
-    setMood(entry?.mood ?? 0)
-    setEnergy(entry?.energy ?? 5)
-  }, [entry, open])
+  useEffect(() => {
+    if (open) {
+      setIntention(entry?.intention ?? '')
+      setGratitude(entry?.gratitude ?? ['', '', ''])
+      setMood(entry?.mood ?? 0)
+      setEnergy(entry?.energy ?? 5)
+    }
+  }, [entry?.id, open])
 
   const handleSave = () => {
     onSave({
@@ -294,12 +296,14 @@ function EveningModal({ open, onClose, entry, onSave }) {
   const [mood, setMood] = useState(entry?.mood ?? 0)
   const [energy, setEnergy] = useState(entry?.energy ?? 5)
 
-  useState(() => {
-    setReflection(entry?.reflection ?? '')
-    setGratitude(entry?.gratitude ?? ['', '', ''])
-    setMood(entry?.mood ?? 0)
-    setEnergy(entry?.energy ?? 5)
-  }, [entry, open])
+  useEffect(() => {
+    if (open) {
+      setReflection(entry?.reflection ?? '')
+      setGratitude(entry?.gratitude ?? ['', '', ''])
+      setMood(entry?.mood ?? 0)
+      setEnergy(entry?.energy ?? 5)
+    }
+  }, [entry?.id, open])
 
   const handleSave = () => {
     onSave({
@@ -452,29 +456,17 @@ function RecentRow({ entry, onEdit, onDelete }) {
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between gap-2">
-            <span className="text-xs font-medium text-[#F5ECD7]/70">
+            <span className="text-xs font-medium text-[#F5ECD7]/75">
               {isMorn ? 'Ochtend check-in' : 'Avond check-out'}
             </span>
             <div className="flex items-center gap-2">
-              <span className="text-xs text-[#F5ECD7]/35 flex items-center gap-1">
+              <span className="text-xs text-[#F5ECD7]/55 flex items-center gap-1">
                 <Calendar size={10} />
                 {formatRelative(entry.createdAt)}
               </span>
               <button
-                onClick={() => onEdit(entry)}
-                className="p-1 rounded hover:bg-[#C97D3A]/20 text-[#C97D3A] opacity-60 hover:opacity-100"
-              >
-                <Edit3 size={12} />
-              </button>
-              <button
-                onClick={() => onDelete(entry)}
-                className="p-1 rounded hover:bg-red-500/20 text-red-400 opacity-60 hover:opacity-100"
-              >
-                <Trash2 size={12} />
-              </button>
-              <button
                 onClick={() => setExpanded((v) => !v)}
-                className="p-1 rounded text-[#F5ECD7]/30 hover:text-[#F5ECD7]"
+                className="p-1 rounded text-[#F5ECD7]/50 hover:text-[#F5ECD7]"
               >
                 {expanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
               </button>
@@ -519,6 +511,24 @@ function RecentRow({ entry, onEdit, onDelete }) {
             </div>
           )}
         </div>
+      </div>
+
+      {/* Action buttons */}
+      <div className="flex gap-2 mt-3 pt-3 border-t border-[#F5ECD7]/[0.07]">
+        <button
+          className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-[#C97D3A]/10 text-[#C97D3A] text-sm font-medium hover:bg-[#C97D3A]/20 active:bg-[#C97D3A]/30 transition-colors"
+          onClick={() => onEdit(entry)}
+        >
+          <Edit3 size={15} />
+          Bewerken
+        </button>
+        <button
+          className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-red-500/10 text-red-400 text-sm font-medium hover:bg-red-500/20 active:bg-red-500/30 transition-colors"
+          onClick={() => onDelete(entry)}
+        >
+          <Trash2 size={15} />
+          Verwijderen
+        </button>
       </div>
     </div>
   )
