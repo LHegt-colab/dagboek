@@ -228,48 +228,48 @@ function RelationshipModal({ open, onClose, initial, onSave, previousPersons }) 
 
 function RelationshipCard({ entry, onEdit, onDelete }) {
   return (
-    <div className="glass-card-hover p-4 flex items-start gap-4 group">
-      {/* Avatar */}
-      <div className="w-10 h-10 rounded-full bg-[#C97D3A]/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-        <span className="text-[#C97D3A] font-bold text-sm">
-          {(entry.personName || '?').charAt(0).toUpperCase()}
-        </span>
-      </div>
-
-      <div className="flex-1 min-w-0">
-        {/* Top row */}
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="font-medium text-[#F5ECD7]">{entry.personName}</span>
-          <Badge className={cn('text-xs border', typeColor(entry.interactionType))}>
-            {entry.interactionType}
-          </Badge>
+    <div className="glass-card-hover p-4 group">
+      <div className="flex items-start gap-4">
+        {/* Avatar */}
+        <div className="w-10 h-10 rounded-full bg-[#C97D3A]/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+          <span className="text-[#C97D3A] font-bold text-sm">
+            {(entry.personName || '?').charAt(0).toUpperCase()}
+          </span>
         </div>
 
-        {/* Impact indicators */}
-        <div className="flex items-center gap-4 mt-2">
-          <div className="flex items-center gap-1.5">
-            <Heart className="w-3.5 h-3.5 text-[#F5ECD7]/40" />
-            <span className={cn('text-sm font-medium', impactColor(entry.emotionalImpact))}>
-              {signedVal(entry.emotionalImpact)}
-            </span>
-            <span className="text-xs text-[#F5ECD7]/30">emotie</span>
+        <div className="flex-1 min-w-0">
+          {/* Top row */}
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="font-medium text-[#F5ECD7]">{entry.personName}</span>
+            <Badge className={cn('text-xs border', typeColor(entry.interactionType))}>
+              {entry.interactionType}
+            </Badge>
           </div>
-          <div className="flex items-center gap-1.5">
-            <Zap className="w-3.5 h-3.5 text-[#F5ECD7]/40" />
-            <span className={cn('text-sm font-medium', impactColor(entry.energyDelta))}>
-              {signedVal(entry.energyDelta)}
-            </span>
-            <span className="text-xs text-[#F5ECD7]/30">energie</span>
+
+          {/* Impact indicators */}
+          <div className="flex items-center gap-4 mt-2">
+            <div className="flex items-center gap-1.5">
+              <Heart className="w-3.5 h-3.5 text-[#F5ECD7]/40" />
+              <span className={cn('text-sm font-medium', impactColor(entry.emotionalImpact))}>
+                {signedVal(entry.emotionalImpact)}
+              </span>
+              <span className="text-xs text-[#F5ECD7]/50">emotie</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <Zap className="w-3.5 h-3.5 text-[#F5ECD7]/40" />
+              <span className={cn('text-sm font-medium', impactColor(entry.energyDelta))}>
+                {signedVal(entry.energyDelta)}
+              </span>
+              <span className="text-xs text-[#F5ECD7]/50">energie</span>
+            </div>
+            <ImpactIcon val={entry.emotionalImpact} />
           </div>
-          <ImpactIcon val={entry.emotionalImpact} />
+
+          {entry.notes && (
+            <p className="text-xs text-[#F5ECD7]/55 mt-1.5 line-clamp-1">{entry.notes}</p>
+          )}
+          <p className="text-xs text-[#F5ECD7]/50 mt-1">{formatRelative(entry.createdAt)}</p>
         </div>
-
-        {entry.notes && (
-          <p className="text-xs text-[#F5ECD7]/40 mt-1.5 line-clamp-1">{entry.notes}</p>
-        )}
-        <p className="text-xs text-[#F5ECD7]/30 mt-1">{formatRelative(entry.createdAt)}</p>
-      </div>
-
       </div>
       <div className="flex gap-2 mt-3 pt-3 border-t border-[#F5ECD7]/[0.07]">
         <button

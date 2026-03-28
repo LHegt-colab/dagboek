@@ -156,44 +156,44 @@ function SportTab() {
         <div className="space-y-3">
           {entries.map(entry => (
             <div key={entry.id} className="glass-card-hover p-4 group">
-              <div className="w-10 h-10 rounded-full bg-[#C97D3A]/20 flex items-center justify-center flex-shrink-0">
-                <Dumbbell className="w-5 h-5 text-[#C97D3A]" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="font-medium text-[#F5ECD7]">{entry.activityName || entry.activity}</span>
-                  <Badge className={cn('text-xs border', intensityColor(entry.intensity))}>
-                    {entry.intensity}
-                  </Badge>
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-full bg-[#C97D3A]/20 flex items-center justify-center flex-shrink-0">
+                  <Dumbbell className="w-5 h-5 text-[#C97D3A]" />
                 </div>
-                <div className="flex items-center gap-3 mt-1 text-sm text-[#F5ECD7]/50">
-                  <span className="flex items-center gap-1">
-                    <Clock className="w-3 h-3" /> {entry.durationMinutes} min
-                  </span>
-                  <span>{formatRelative(entry.createdAt)}</span>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="font-medium text-[#F5ECD7]">{entry.activityName || entry.activity}</span>
+                    <Badge className={cn('text-xs border', intensityColor(entry.intensity))}>
+                      {entry.intensity}
+                    </Badge>
+                  </div>
+                  <div className="flex items-center gap-3 mt-1 text-sm text-[#F5ECD7]/60">
+                    <span className="flex items-center gap-1">
+                      <Clock className="w-3 h-3" /> {entry.durationMinutes} min
+                    </span>
+                    <span>{formatRelative(entry.createdAt)}</span>
+                  </div>
+                  {entry.notes && (
+                    <p className="text-xs text-[#F5ECD7]/55 mt-1 truncate">{entry.notes}</p>
+                  )}
                 </div>
-                {entry.notes && (
-                  <p className="text-xs text-[#F5ECD7]/40 mt-1 truncate">{entry.notes}</p>
-                )}
               </div>
-            </div>
-            <div className="flex gap-2 mt-3 pt-3 border-t border-[#F5ECD7]/[0.07]">
-              <button
-                className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-[#C97D3A]/10 text-[#C97D3A] text-sm font-medium hover:bg-[#C97D3A]/20 active:bg-[#C97D3A]/30 transition-colors"
-                onClick={() => handleEdit(entry)}
-              >
-                <Pencil className="w-4 h-4" />
-                Bewerken
-              </button>
-              <button
-                className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-red-500/10 text-red-400 text-sm font-medium hover:bg-red-500/20 active:bg-red-500/30 transition-colors"
-                onClick={() => handleDelete(entry.id)}
-              >
-                <Trash2 className="w-4 h-4" />
-                Verwijderen
-              </button>
-            </div>
-          </div>
+              <div className="flex gap-2 mt-3 pt-3 border-t border-[#F5ECD7]/[0.07]">
+                <button
+                  className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-[#C97D3A]/10 text-[#C97D3A] text-sm font-medium hover:bg-[#C97D3A]/20 active:bg-[#C97D3A]/30 transition-colors"
+                  onClick={() => handleEdit(entry)}
+                >
+                  <Pencil className="w-4 h-4" />
+                  Bewerken
+                </button>
+                <button
+                  className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-red-500/10 text-red-400 text-sm font-medium hover:bg-red-500/20 active:bg-red-500/30 transition-colors"
+                  onClick={() => handleDelete(entry.id)}
+                >
+                  <Trash2 className="w-4 h-4" />
+                  Verwijderen
+                </button>
+              </div>
             </div>
           ))}
         </div>
@@ -364,39 +364,40 @@ function VoedingTab() {
         <div className="space-y-3">
           {entries.map(entry => (
             <div key={entry.id} className="glass-card-hover p-4 group">
-              <div className="w-10 h-10 rounded-full bg-[#C97D3A]/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                <Utensils className="w-5 h-5 text-[#C97D3A]" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <Badge className={cn('text-xs border', mealTypeColor(entry.mealType))}>
-                    {entry.mealType}
-                  </Badge>
-                  <Badge className={cn('text-xs border', moodColor(entry.moodAfter))}>
-                    {entry.moodAfter > 0 ? '+' : ''}{entry.moodAfter} {moodLabel(entry.moodAfter)}
-                  </Badge>
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-full bg-[#C97D3A]/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <Utensils className="w-5 h-5 text-[#C97D3A]" />
                 </div>
-                <p className="text-[#F5ECD7] mt-1 text-sm line-clamp-2">{entry.description}</p>
-                <p className="text-xs text-[#F5ECD7]/40 mt-1">{formatRelative(entry.createdAt)}</p>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <Badge className={cn('text-xs border', mealTypeColor(entry.mealType))}>
+                      {entry.mealType}
+                    </Badge>
+                    <Badge className={cn('text-xs border', moodColor(entry.moodAfter))}>
+                      {entry.moodAfter > 0 ? '+' : ''}{entry.moodAfter} {moodLabel(entry.moodAfter)}
+                    </Badge>
+                  </div>
+                  <p className="text-[#F5ECD7] mt-1 text-sm line-clamp-2">{entry.description}</p>
+                  <p className="text-xs text-[#F5ECD7]/55 mt-1">{formatRelative(entry.createdAt)}</p>
+                </div>
+              </div>
+              <div className="flex gap-2 mt-3 pt-3 border-t border-[#F5ECD7]/[0.07]">
+                <button
+                  className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-[#C97D3A]/10 text-[#C97D3A] text-sm font-medium hover:bg-[#C97D3A]/20 active:bg-[#C97D3A]/30 transition-colors"
+                  onClick={() => handleEdit(entry)}
+                >
+                  <Pencil className="w-4 h-4" />
+                  Bewerken
+                </button>
+                <button
+                  className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-red-500/10 text-red-400 text-sm font-medium hover:bg-red-500/20 active:bg-red-500/30 transition-colors"
+                  onClick={() => handleDelete(entry.id)}
+                >
+                  <Trash2 className="w-4 h-4" />
+                  Verwijderen
+                </button>
               </div>
             </div>
-            <div className="flex gap-2 mt-3 pt-3 border-t border-[#F5ECD7]/[0.07]">
-              <button
-                className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-[#C97D3A]/10 text-[#C97D3A] text-sm font-medium hover:bg-[#C97D3A]/20 active:bg-[#C97D3A]/30 transition-colors"
-                onClick={() => handleEdit(entry)}
-              >
-                <Pencil className="w-4 h-4" />
-                Bewerken
-              </button>
-              <button
-                className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-red-500/10 text-red-400 text-sm font-medium hover:bg-red-500/20 active:bg-red-500/30 transition-colors"
-                onClick={() => handleDelete(entry.id)}
-              >
-                <Trash2 className="w-4 h-4" />
-                Verwijderen
-              </button>
-            </div>
-          </div>
           ))}
         </div>
       )}
@@ -564,45 +565,45 @@ function SlaapTab() {
         <div className="space-y-3">
           {entries.map(entry => (
             <div key={entry.id} className="glass-card-hover p-4 group">
-              <div className="w-10 h-10 rounded-full bg-[#141414] flex items-center justify-center flex-shrink-0">
-                <span className={cn('text-lg font-bold font-["Playfair_Display"]', sleepHoursColor(entry.hours))}>
-                  {entry.hours}u
-                </span>
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <Badge className={cn('text-xs border', sleepQualityBadge(entry.quality))}>
-                    {sleepQualityLabel(entry.quality)} ({entry.quality}/10)
-                  </Badge>
-                  {entry.bedtime && entry.wakeTime && (
-                    <span className="text-xs text-[#F5ECD7]/40">
-                      {entry.bedtime} – {entry.wakeTime}
-                    </span>
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-full bg-[#1C1C1C] flex items-center justify-center flex-shrink-0">
+                  <span className={cn('text-lg font-bold font-["Playfair_Display"]', sleepHoursColor(entry.hours))}>
+                    {entry.hours}u
+                  </span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <Badge className={cn('text-xs border', sleepQualityBadge(entry.quality))}>
+                      {sleepQualityLabel(entry.quality)} ({entry.quality}/10)
+                    </Badge>
+                    {entry.bedtime && entry.wakeTime && (
+                      <span className="text-xs text-[#F5ECD7]/55">
+                        {entry.bedtime} – {entry.wakeTime}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs text-[#F5ECD7]/55 mt-1">{formatRelative(entry.createdAt)}</p>
+                  {entry.notes && (
+                    <p className="text-xs text-[#F5ECD7]/55 mt-0.5 truncate">{entry.notes}</p>
                   )}
                 </div>
-                <p className="text-xs text-[#F5ECD7]/40 mt-1">{formatRelative(entry.createdAt)}</p>
-                {entry.notes && (
-                  <p className="text-xs text-[#F5ECD7]/40 mt-0.5 truncate">{entry.notes}</p>
-                )}
               </div>
-            </div>
-            <div className="flex gap-2 mt-3 pt-3 border-t border-[#F5ECD7]/[0.07]">
-              <button
-                className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-[#C97D3A]/10 text-[#C97D3A] text-sm font-medium hover:bg-[#C97D3A]/20 active:bg-[#C97D3A]/30 transition-colors"
-                onClick={() => handleEdit(entry)}
-              >
-                <Pencil className="w-4 h-4" />
-                Bewerken
-              </button>
-              <button
-                className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-red-500/10 text-red-400 text-sm font-medium hover:bg-red-500/20 active:bg-red-500/30 transition-colors"
-                onClick={() => handleDelete(entry.id)}
-              >
-                <Trash2 className="w-4 h-4" />
-                Verwijderen
-              </button>
-            </div>
-          </div>
+              <div className="flex gap-2 mt-3 pt-3 border-t border-[#F5ECD7]/[0.07]">
+                <button
+                  className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-[#C97D3A]/10 text-[#C97D3A] text-sm font-medium hover:bg-[#C97D3A]/20 active:bg-[#C97D3A]/30 transition-colors"
+                  onClick={() => handleEdit(entry)}
+                >
+                  <Pencil className="w-4 h-4" />
+                  Bewerken
+                </button>
+                <button
+                  className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-red-500/10 text-red-400 text-sm font-medium hover:bg-red-500/20 active:bg-red-500/30 transition-colors"
+                  onClick={() => handleDelete(entry.id)}
+                >
+                  <Trash2 className="w-4 h-4" />
+                  Verwijderen
+                </button>
+              </div>
             </div>
           ))}
         </div>
@@ -771,52 +772,53 @@ function SpanningTab() {
         <div className="space-y-3">
           {entries.map(entry => (
             <div key={entry.id} className="glass-card-hover p-4 group">
-              <div className={cn(
-                'w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 font-bold text-sm',
-                entry.level >= 7 ? 'bg-red-900/40 text-red-300' :
-                entry.level >= 4 ? 'bg-amber-900/40 text-amber-300' :
-                'bg-green-900/40 text-green-300'
-              )}>
-                {entry.level}
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <Badge className={cn('text-xs border', tensionLevelBadge(entry.level))}>
-                    {tensionLevelLabel(entry.level)} ({entry.level}/10)
-                  </Badge>
-                  {entry.trigger && (
-                    <span className="text-xs text-[#F5ECD7]/60 truncate max-w-[200px]">{entry.trigger}</span>
-                  )}
+              <div className="flex items-center gap-4">
+                <div className={cn(
+                  'w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 font-bold text-sm',
+                  entry.level >= 7 ? 'bg-red-900/40 text-red-300' :
+                  entry.level >= 4 ? 'bg-amber-900/40 text-amber-300' :
+                  'bg-green-900/40 text-green-300'
+                )}>
+                  {entry.level}
                 </div>
-                {entry.bodyParts && entry.bodyParts.length > 0 && (
-                  <div className="flex flex-wrap gap-1 mt-2">
-                    {entry.bodyParts.map(part => (
-                      <span key={part} className="px-2 py-0.5 rounded-full text-xs bg-[#141414] border border-[#2a2a2a] text-[#F5ECD7]/50 capitalize">
-                        {part}
-                      </span>
-                    ))}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <Badge className={cn('text-xs border', tensionLevelBadge(entry.level))}>
+                      {tensionLevelLabel(entry.level)} ({entry.level}/10)
+                    </Badge>
+                    {entry.trigger && (
+                      <span className="text-xs text-[#F5ECD7]/60 truncate max-w-[200px]">{entry.trigger}</span>
+                    )}
                   </div>
-                )}
-                <p className="text-xs text-[#F5ECD7]/40 mt-1">{formatRelative(entry.createdAt)}</p>
+                  {entry.bodyParts && entry.bodyParts.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mt-2">
+                      {entry.bodyParts.map(part => (
+                        <span key={part} className="px-2 py-0.5 rounded-full text-xs bg-[#141414] border border-[#2a2a2a] text-[#F5ECD7]/50 capitalize">
+                          {part}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  <p className="text-xs text-[#F5ECD7]/40 mt-1">{formatRelative(entry.createdAt)}</p>
+                </div>
+              </div>
+              <div className="flex gap-2 mt-3 pt-3 border-t border-[#F5ECD7]/[0.07]">
+                <button
+                  className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-[#C97D3A]/10 text-[#C97D3A] text-sm font-medium hover:bg-[#C97D3A]/20 active:bg-[#C97D3A]/30 transition-colors"
+                  onClick={() => handleEdit(entry)}
+                >
+                  <Pencil className="w-4 h-4" />
+                  Bewerken
+                </button>
+                <button
+                  className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-red-500/10 text-red-400 text-sm font-medium hover:bg-red-500/20 active:bg-red-500/30 transition-colors"
+                  onClick={() => handleDelete(entry.id)}
+                >
+                  <Trash2 className="w-4 h-4" />
+                  Verwijderen
+                </button>
               </div>
             </div>
-            <div className="flex gap-2 mt-3 pt-3 border-t border-[#F5ECD7]/[0.07]">
-              <button
-                className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-[#C97D3A]/10 text-[#C97D3A] text-sm font-medium hover:bg-[#C97D3A]/20 active:bg-[#C97D3A]/30 transition-colors"
-                onClick={() => handleEdit(entry)}
-              >
-                <Pencil className="w-4 h-4" />
-                Bewerken
-              </button>
-              <button
-                className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-red-500/10 text-red-400 text-sm font-medium hover:bg-red-500/20 active:bg-red-500/30 transition-colors"
-                onClick={() => handleDelete(entry.id)}
-              >
-                <Trash2 className="w-4 h-4" />
-                Verwijderen
-              </button>
-            </div>
-          </div>
           ))}
         </div>
       )}

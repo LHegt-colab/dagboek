@@ -258,45 +258,46 @@ function EnergyCard({ entry, onEdit, onDelete }) {
   const Icon = cfg.icon
 
   return (
-    <div className="glass-card-hover p-4 flex items-start gap-4 group">
-      <div className={cn('w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5', cfg.bg)}>
-        <Icon className={cn('w-5 h-5', cfg.accent)} />
-      </div>
-
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="font-medium text-[#F5ECD7]">{entry.title}</span>
-          <Badge className={cn('text-xs border', cfg.color)}>{entry.entryType}</Badge>
+    <div className="glass-card-hover p-4 group">
+      <div className="flex items-start gap-4">
+        <div className={cn('w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5', cfg.bg)}>
+          <Icon className={cn('w-5 h-5', cfg.accent)} />
         </div>
 
-        {/* Energy bar */}
-        <div className="flex items-center gap-2 mt-2">
-          <div className="flex-1 h-1.5 rounded-full bg-[#2a2a2a] overflow-hidden">
-            <div
-              className={cn('h-full rounded-full transition-all', energyLevelColor(entry.energyLevel))}
-              style={{ width: `${(entry.energyLevel / 10) * 100}%` }}
-            />
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="font-medium text-[#F5ECD7]">{entry.title}</span>
+            <Badge className={cn('text-xs border', cfg.color)}>{entry.entryType}</Badge>
           </div>
-          <span className="text-xs text-[#F5ECD7]/50 flex-shrink-0 w-10 text-right">
-            {entry.energyLevel}/10
-          </span>
-        </div>
 
-        <div className="flex items-center gap-3 mt-1.5 text-xs text-[#F5ECD7]/40">
-          {entry.durationMinutes > 0 && (
-            <span className="flex items-center gap-1">
-              <Clock className="w-3 h-3" /> {formatMinutes(entry.durationMinutes)}
+          {/* Energy bar */}
+          <div className="flex items-center gap-2 mt-2">
+            <div className="flex-1 h-1.5 rounded-full bg-[#2a2a2a] overflow-hidden">
+              <div
+                className={cn('h-full rounded-full transition-all', energyLevelColor(entry.energyLevel))}
+                style={{ width: `${(entry.energyLevel / 10) * 100}%` }}
+              />
+            </div>
+            <span className="text-xs text-[#F5ECD7]/50 flex-shrink-0 w-10 text-right">
+              {entry.energyLevel}/10
             </span>
+          </div>
+
+          <div className="flex items-center gap-3 mt-1.5 text-xs text-[#F5ECD7]/55">
+            {entry.durationMinutes > 0 && (
+              <span className="flex items-center gap-1">
+                <Clock className="w-3 h-3" /> {formatMinutes(entry.durationMinutes)}
+              </span>
+            )}
+            <span>{formatRelative(entry.createdAt)}</span>
+          </div>
+
+          {entry.description && (
+            <p className="text-xs text-[#F5ECD7]/55 mt-1 line-clamp-1">{entry.description}</p>
           )}
-          <span>{formatRelative(entry.createdAt)}</span>
         </div>
-
-        {entry.description && (
-          <p className="text-xs text-[#F5ECD7]/40 mt-1 line-clamp-1">{entry.description}</p>
-        )}
       </div>
 
-      </div>
       <div className="flex gap-2 mt-3 pt-3 border-t border-[#F5ECD7]/[0.07]">
         <button
           className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-[#C97D3A]/10 text-[#C97D3A] text-sm font-medium hover:bg-[#C97D3A]/20 active:bg-[#C97D3A]/30 transition-colors"
