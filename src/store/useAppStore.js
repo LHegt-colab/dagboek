@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { v4 as uuidv4 } from 'uuid'
 import { defaultSettings } from '../data/defaultSettings'
+import { upsertEntry, deleteEntry } from '../lib/supabaseSync'
 
 const now = () => new Date().toISOString()
 
@@ -14,111 +15,250 @@ const makeEntry = (data) => ({
 
 const useAppStore = create(
   persist(
-    (set, get) => ({
-      // State
-      journal: [],
-      moods: [],
-      schema: [],
-      healthSport: [],
-      healthNutrition: [],
-      healthSleep: [],
-      healthTension: [],
-      triggers: [],
-      relationships: [],
-      energy: [],
-      checkins: [],
-      settings: defaultSettings,
-      // ── Journal ──────────────────────────────
-      addJournalEntry: (data) => set((s) => ({ journal: [makeEntry(data), ...s.journal] })),
-      updateJournalEntry: (id, data) => set((s) => ({
-        journal: s.journal.map((e) => e.id === id ? { ...e, ...data, updatedAt: now() } : e),
-      })),
-      deleteJournalEntry: (id) => set((s) => ({ journal: s.journal.filter((e) => e.id !== id) })),
+    (set, get) => {
+      // Helpers that call Supabase in the background (fire-and-forget)
+      const up = (storeKey, entry) => {
+        const { userId } = get()
+        if (userId) upsertEntry(storeKey, entry, userId)
+      }
+      const del = (storeKey, id) => {
+        const { userId } = get()
+        if (userId) deleteEntry(storeKey, id, userId)
+      }
 
-      // ── Moods ──────────────────────────────
-      addMood: (data) => set((s) => ({ moods: [makeEntry(data), ...s.moods] })),
-      updateMood: (id, data) => set((s) => ({
-        moods: s.moods.map((e) => e.id === id ? { ...e, ...data, updatedAt: now() } : e),
-      })),
-      deleteMood: (id) => set((s) => ({ moods: s.moods.filter((e) => e.id !== id) })),
+      return {
+        // Auth
+        userId: null,
+        setUserId: (id) => set({ userId: id }),
 
-      // ── Schema Therapy ──────────────────────
-      addSchemaEntry: (data) => set((s) => ({ schema: [makeEntry(data), ...s.schema] })),
-      updateSchemaEntry: (id, data) => set((s) => ({
-        schema: s.schema.map((e) => e.id === id ? { ...e, ...data, updatedAt: now() } : e),
-      })),
-      deleteSchemaEntry: (id) => set((s) => ({ schema: s.schema.filter((e) => e.id !== id) })),
+        // State
+        journal: [],
+        moods: [],
+        schema: [],
+        healthSport: [],
+        healthNutrition: [],
+        healthSleep: [],
+        healthTension: [],
+        triggers: [],
+        relationships: [],
+        energy: [],
+        checkins: [],
+        settings: defaultSettings,
 
-      // ── Health: Sport ──────────────────────
-      addSportEntry: (data) => set((s) => ({ healthSport: [makeEntry(data), ...s.healthSport] })),
-      updateSportEntry: (id, data) => set((s) => ({
-        healthSport: s.healthSport.map((e) => e.id === id ? { ...e, ...data, updatedAt: now() } : e),
-      })),
-      deleteSportEntry: (id) => set((s) => ({ healthSport: s.healthSport.filter((e) => e.id !== id) })),
+        // ── Journal ──────────────────────────────
+        addJournalEntry: (data) => {
+          const entry = makeEntry(data)
+          set((s) => ({ journal: [entry, ...s.journal] }))
+          up('journal', entry)
+        },
+        updateJournalEntry: (id, data) => {
+          set((s) => ({
+            journal: s.journal.map((e) => e.id === id ? { ...e, ...data, updatedAt: now() } : e),
+          }))
+          const updated = get().journal.find((e) => e.id === id)
+          if (updated) up('journal', updated)
+        },
+        deleteJournalEntry: (id) => {
+          set((s) => ({ journal: s.journal.filter((e) => e.id !== id) }))
+          del('journal', id)
+        },
 
-      // ── Health: Nutrition ──────────────────
-      addNutritionEntry: (data) => set((s) => ({ healthNutrition: [makeEntry(data), ...s.healthNutrition] })),
-      updateNutritionEntry: (id, data) => set((s) => ({
-        healthNutrition: s.healthNutrition.map((e) => e.id === id ? { ...e, ...data, updatedAt: now() } : e),
-      })),
-      deleteNutritionEntry: (id) => set((s) => ({ healthNutrition: s.healthNutrition.filter((e) => e.id !== id) })),
+        // ── Moods ──────────────────────────────
+        addMood: (data) => {
+          const entry = makeEntry(data)
+          set((s) => ({ moods: [entry, ...s.moods] }))
+          up('moods', entry)
+        },
+        updateMood: (id, data) => {
+          set((s) => ({
+            moods: s.moods.map((e) => e.id === id ? { ...e, ...data, updatedAt: now() } : e),
+          }))
+          const updated = get().moods.find((e) => e.id === id)
+          if (updated) up('moods', updated)
+        },
+        deleteMood: (id) => {
+          set((s) => ({ moods: s.moods.filter((e) => e.id !== id) }))
+          del('moods', id)
+        },
 
-      // ── Health: Sleep ──────────────────────
-      addSleepEntry: (data) => set((s) => ({ healthSleep: [makeEntry(data), ...s.healthSleep] })),
-      updateSleepEntry: (id, data) => set((s) => ({
-        healthSleep: s.healthSleep.map((e) => e.id === id ? { ...e, ...data, updatedAt: now() } : e),
-      })),
-      deleteSleepEntry: (id) => set((s) => ({ healthSleep: s.healthSleep.filter((e) => e.id !== id) })),
+        // ── Schema Therapy ──────────────────────
+        addSchemaEntry: (data) => {
+          const entry = makeEntry(data)
+          set((s) => ({ schema: [entry, ...s.schema] }))
+          up('schema', entry)
+        },
+        updateSchemaEntry: (id, data) => {
+          set((s) => ({
+            schema: s.schema.map((e) => e.id === id ? { ...e, ...data, updatedAt: now() } : e),
+          }))
+          const updated = get().schema.find((e) => e.id === id)
+          if (updated) up('schema', updated)
+        },
+        deleteSchemaEntry: (id) => {
+          set((s) => ({ schema: s.schema.filter((e) => e.id !== id) }))
+          del('schema', id)
+        },
 
-      // ── Health: Tension ──────────────────
-      addTensionEntry: (data) => set((s) => ({ healthTension: [makeEntry(data), ...s.healthTension] })),
-      updateTensionEntry: (id, data) => set((s) => ({
-        healthTension: s.healthTension.map((e) => e.id === id ? { ...e, ...data, updatedAt: now() } : e),
-      })),
-      deleteTensionEntry: (id) => set((s) => ({ healthTension: s.healthTension.filter((e) => e.id !== id) })),
+        // ── Health: Sport ──────────────────────
+        addSportEntry: (data) => {
+          const entry = makeEntry(data)
+          set((s) => ({ healthSport: [entry, ...s.healthSport] }))
+          up('healthSport', entry)
+        },
+        updateSportEntry: (id, data) => {
+          set((s) => ({
+            healthSport: s.healthSport.map((e) => e.id === id ? { ...e, ...data, updatedAt: now() } : e),
+          }))
+          const updated = get().healthSport.find((e) => e.id === id)
+          if (updated) up('healthSport', updated)
+        },
+        deleteSportEntry: (id) => {
+          set((s) => ({ healthSport: s.healthSport.filter((e) => e.id !== id) }))
+          del('healthSport', id)
+        },
 
-      // ── Triggers ──────────────────────────
-      addTrigger: (data) => set((s) => ({ triggers: [makeEntry(data), ...s.triggers] })),
-      updateTrigger: (id, data) => set((s) => ({
-        triggers: s.triggers.map((e) => e.id === id ? { ...e, ...data, updatedAt: now() } : e),
-      })),
-      deleteTrigger: (id) => set((s) => ({ triggers: s.triggers.filter((e) => e.id !== id) })),
+        // ── Health: Nutrition ──────────────────
+        addNutritionEntry: (data) => {
+          const entry = makeEntry(data)
+          set((s) => ({ healthNutrition: [entry, ...s.healthNutrition] }))
+          up('healthNutrition', entry)
+        },
+        updateNutritionEntry: (id, data) => {
+          set((s) => ({
+            healthNutrition: s.healthNutrition.map((e) => e.id === id ? { ...e, ...data, updatedAt: now() } : e),
+          }))
+          const updated = get().healthNutrition.find((e) => e.id === id)
+          if (updated) up('healthNutrition', updated)
+        },
+        deleteNutritionEntry: (id) => {
+          set((s) => ({ healthNutrition: s.healthNutrition.filter((e) => e.id !== id) }))
+          del('healthNutrition', id)
+        },
 
-      // ── Relationships ──────────────────────
-      addRelationship: (data) => set((s) => ({ relationships: [makeEntry(data), ...s.relationships] })),
-      updateRelationship: (id, data) => set((s) => ({
-        relationships: s.relationships.map((e) => e.id === id ? { ...e, ...data, updatedAt: now() } : e),
-      })),
-      deleteRelationship: (id) => set((s) => ({ relationships: s.relationships.filter((e) => e.id !== id) })),
+        // ── Health: Sleep ──────────────────────
+        addSleepEntry: (data) => {
+          const entry = makeEntry(data)
+          set((s) => ({ healthSleep: [entry, ...s.healthSleep] }))
+          up('healthSleep', entry)
+        },
+        updateSleepEntry: (id, data) => {
+          set((s) => ({
+            healthSleep: s.healthSleep.map((e) => e.id === id ? { ...e, ...data, updatedAt: now() } : e),
+          }))
+          const updated = get().healthSleep.find((e) => e.id === id)
+          if (updated) up('healthSleep', updated)
+        },
+        deleteSleepEntry: (id) => {
+          set((s) => ({ healthSleep: s.healthSleep.filter((e) => e.id !== id) }))
+          del('healthSleep', id)
+        },
 
-      // ── Energy ────────────────────────────
-      addEnergyEntry: (data) => set((s) => ({ energy: [makeEntry(data), ...s.energy] })),
-      updateEnergyEntry: (id, data) => set((s) => ({
-        energy: s.energy.map((e) => e.id === id ? { ...e, ...data, updatedAt: now() } : e),
-      })),
-      deleteEnergyEntry: (id) => set((s) => ({ energy: s.energy.filter((e) => e.id !== id) })),
+        // ── Health: Tension ──────────────────
+        addTensionEntry: (data) => {
+          const entry = makeEntry(data)
+          set((s) => ({ healthTension: [entry, ...s.healthTension] }))
+          up('healthTension', entry)
+        },
+        updateTensionEntry: (id, data) => {
+          set((s) => ({
+            healthTension: s.healthTension.map((e) => e.id === id ? { ...e, ...data, updatedAt: now() } : e),
+          }))
+          const updated = get().healthTension.find((e) => e.id === id)
+          if (updated) up('healthTension', updated)
+        },
+        deleteTensionEntry: (id) => {
+          set((s) => ({ healthTension: s.healthTension.filter((e) => e.id !== id) }))
+          del('healthTension', id)
+        },
 
-      // ── Check-ins ─────────────────────────
-      addCheckin: (data) => set((s) => ({ checkins: [makeEntry(data), ...s.checkins] })),
-      updateCheckin: (id, data) => set((s) => ({
-        checkins: s.checkins.map((e) => e.id === id ? { ...e, ...data, updatedAt: now() } : e),
-      })),
-      deleteCheckin: (id) => set((s) => ({ checkins: s.checkins.filter((e) => e.id !== id) })),
+        // ── Triggers ──────────────────────────
+        addTrigger: (data) => {
+          const entry = makeEntry(data)
+          set((s) => ({ triggers: [entry, ...s.triggers] }))
+          up('triggers', entry)
+        },
+        updateTrigger: (id, data) => {
+          set((s) => ({
+            triggers: s.triggers.map((e) => e.id === id ? { ...e, ...data, updatedAt: now() } : e),
+          }))
+          const updated = get().triggers.find((e) => e.id === id)
+          if (updated) up('triggers', updated)
+        },
+        deleteTrigger: (id) => {
+          set((s) => ({ triggers: s.triggers.filter((e) => e.id !== id) }))
+          del('triggers', id)
+        },
 
-      // ── Settings ──────────────────────────
-      updateSettings: (data) => set((s) => ({ settings: { ...s.settings, ...data } })),
+        // ── Relationships ──────────────────────
+        addRelationship: (data) => {
+          const entry = makeEntry(data)
+          set((s) => ({ relationships: [entry, ...s.relationships] }))
+          up('relationships', entry)
+        },
+        updateRelationship: (id, data) => {
+          set((s) => ({
+            relationships: s.relationships.map((e) => e.id === id ? { ...e, ...data, updatedAt: now() } : e),
+          }))
+          const updated = get().relationships.find((e) => e.id === id)
+          if (updated) up('relationships', updated)
+        },
+        deleteRelationship: (id) => {
+          set((s) => ({ relationships: s.relationships.filter((e) => e.id !== id) }))
+          del('relationships', id)
+        },
 
-      // ── Reset ─────────────────────────────
-      resetAllData: () => {
-        localStorage.removeItem('dagboek-store-v2')
-        set({
-          journal: [], moods: [], schema: [],
-          healthSport: [], healthNutrition: [], healthSleep: [], healthTension: [],
-          triggers: [], relationships: [], energy: [], checkins: [],
-        })
-      },
-      importData: (data) => set(data),
-    }),
+        // ── Energy ────────────────────────────
+        addEnergyEntry: (data) => {
+          const entry = makeEntry(data)
+          set((s) => ({ energy: [entry, ...s.energy] }))
+          up('energy', entry)
+        },
+        updateEnergyEntry: (id, data) => {
+          set((s) => ({
+            energy: s.energy.map((e) => e.id === id ? { ...e, ...data, updatedAt: now() } : e),
+          }))
+          const updated = get().energy.find((e) => e.id === id)
+          if (updated) up('energy', updated)
+        },
+        deleteEnergyEntry: (id) => {
+          set((s) => ({ energy: s.energy.filter((e) => e.id !== id) }))
+          del('energy', id)
+        },
+
+        // ── Check-ins ─────────────────────────
+        addCheckin: (data) => {
+          const entry = makeEntry(data)
+          set((s) => ({ checkins: [entry, ...s.checkins] }))
+          up('checkins', entry)
+        },
+        updateCheckin: (id, data) => {
+          set((s) => ({
+            checkins: s.checkins.map((e) => e.id === id ? { ...e, ...data, updatedAt: now() } : e),
+          }))
+          const updated = get().checkins.find((e) => e.id === id)
+          if (updated) up('checkins', updated)
+        },
+        deleteCheckin: (id) => {
+          set((s) => ({ checkins: s.checkins.filter((e) => e.id !== id) }))
+          del('checkins', id)
+        },
+
+        // ── Settings ──────────────────────────
+        updateSettings: (data) => set((s) => ({ settings: { ...s.settings, ...data } })),
+
+        // ── Reset ─────────────────────────────
+        resetAllData: () => {
+          localStorage.removeItem('dagboek-store-v2')
+          set({
+            journal: [], moods: [], schema: [],
+            healthSport: [], healthNutrition: [], healthSleep: [], healthTension: [],
+            triggers: [], relationships: [], energy: [], checkins: [],
+          })
+        },
+
+        importData: (data) => set(data),
+      }
+    },
     {
       name: 'dagboek-store-v2',
       partialize: (s) => ({
@@ -128,6 +268,7 @@ const useAppStore = create(
         triggers: s.triggers, relationships: s.relationships,
         energy: s.energy, checkins: s.checkins,
         settings: s.settings,
+        // userId is NOT persisted — comes from Supabase session on every load
       }),
     }
   )

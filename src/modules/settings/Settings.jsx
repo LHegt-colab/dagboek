@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react'
-import { Save, Trash2, Upload, Download, AlertTriangle, Plus, X, RefreshCw } from 'lucide-react'
+import { Save, Trash2, Upload, Download, AlertTriangle, Plus, X, RefreshCw, LogOut } from 'lucide-react'
 import useAppStore from '@/store/useAppStore'
+import { useAuth } from '@/contexts/AuthContext'
 import { defaultSettings } from '@/data/defaultSettings'
 import { exportToJSON, importFromJSON } from '@/utils/exportPDF'
 import { storage } from '@/utils/storage'
@@ -19,7 +20,13 @@ import { format } from 'date-fns'
 
 export default function Settings() {
   const { settings, updateSettings, resetAllData, importData } = useAppStore()
+  const { user, signOut } = useAuth()
   const { toast } = useToast()
+
+  const handleSignOut = async () => {
+    await signOut()
+    toast({ title: 'Uitgelogd', description: 'Tot de volgende keer.' })
+  }
   const [resetConfirm, setResetConfirm] = useState(false)
   const [newEmotion, setNewEmotion] = useState('')
   const [newMode, setNewMode] = useState({ label: '', description: '', color: '#C97D3A' })
@@ -220,12 +227,27 @@ export default function Settings() {
         </div>
       </section>
 
+      {/* Account */}
+      <section className="glass-card p-5 space-y-3">
+        <h2 className="font-display text-base font-semibold text-cream-200">Account</h2>
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-body text-cream-200/70">{user?.email}</p>
+            <p className="text-xs font-body text-cream-200/30 mt-0.5">Ingelogd via Supabase</p>
+          </div>
+          <Button variant="outline" size="sm" onClick={handleSignOut}>
+            <LogOut className="w-3.5 h-3.5" />
+            Uitloggen
+          </Button>
+        </div>
+      </section>
+
       {/* About */}
       <section className="glass-card p-5 space-y-2">
         <h2 className="font-display text-base font-semibold text-cream-200">Over</h2>
         <div className="text-xs font-body text-cream-200/40 space-y-1">
           <p>Dagboek — Persoonlijk Inzicht v1.0.0</p>
-          <p>Data wordt lokaal opgeslagen in je browser (localStorage).</p>
+          <p>Data wordt gesynchroniseerd via Supabase en lokaal opgeslagen als backup.</p>
           <p>Supabase schema: <code className="text-amber/60">dagboek</code></p>
         </div>
       </section>
