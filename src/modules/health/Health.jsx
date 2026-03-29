@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
@@ -438,6 +438,17 @@ const emptySlaap = { hours: 7, quality: 7, bedtime: '22:30', wakeTime: '06:30', 
 function SlaapModal({ open, onClose, initial, onSave }) {
   const [form, setForm] = useState(initial || emptySlaap)
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }))
+
+  // Auto-calculate hours when bedtime or wakeTime changes
+  useEffect(() => {
+    if (!form.bedtime || !form.wakeTime) return
+    const [bH, bM] = form.bedtime.split(':').map(Number)
+    const [wH, wM] = form.wakeTime.split(':').map(Number)
+    let diffMins = (wH * 60 + wM) - (bH * 60 + bM)
+    if (diffMins < 0) diffMins += 24 * 60 // overnight sleep (cross midnight)
+    const hours = Math.min(12, Math.max(0, Math.round(diffMins / 30) * 0.5))
+    set('hours', hours)
+  }, [form.bedtime, form.wakeTime])
 
   const handleSave = () => {
     onSave({ ...form })

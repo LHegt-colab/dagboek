@@ -126,19 +126,23 @@ function EntryCard({ entry, onClick, onDelete }) {
 // ---------------------------------------------------------------------------
 // Entry Modal (Add / Edit)
 // ---------------------------------------------------------------------------
-function EntryModal({ open, onClose, entry, onSave, prompts = [] }) {
+function EntryModal({ open, onClose, entry, onSave, prompts = [], allTags = [] }) {
   const isEdit = Boolean(entry?.id)
 
   const [title, setTitle] = useState(entry?.title ?? '')
   const [content, setContent] = useState(entry?.content ?? '')
-  const [tagsRaw, setTagsRaw] = useState(entry?.tags?.join(', ') ?? '')
+  const [tags, setTags] = useState(entry?.tags ?? [])
+  const [tagInput, setTagInput] = useState('')
+  const [showSuggestions, setShowSuggestions] = useState(false)
   const [prompt, setPrompt] = useState('')
 
   // Reset when entry changes
   const resetForm = (e) => {
     setTitle(e?.title ?? '')
     setContent(e?.content ?? '')
-    setTagsRaw(e?.tags?.join(', ') ?? '')
+    setTags(e?.tags ?? [])
+    setTagInput('')
+    setShowSuggestions(false)
     setPrompt('')
   }
 
@@ -147,6 +151,29 @@ function EntryModal({ open, onClose, entry, onSave, prompts = [] }) {
     if (open) resetForm(entry)
   }, [entry?.id, open])
 
+  // Suggestions: all known tags not yet selected, filtered by current input
+  const suggestions = allTags.filter(
+    (t) => !tags.includes(t) && t.toLowerCase().includes(tagInput.toLowerCase())
+  )
+
+  const addTag = (tag) => {
+    const t = tag.trim()
+    if (t && !tags.includes(t)) setTags((prev) => [...prev, t])
+    setTagInput('')
+    setShowSuggestions(false)
+  }
+
+  const removeTag = (tag) => setTags((prev) => prev.filter((t) => t !== tag))
+
+  const handleTagKeyDown = (e) => {
+    if ((e.key === 'Enter' || e.key === ',') && tagInput.trim()) {
+      e.preventDefault()
+      addTag(tagInput)
+    } else if (e.key === 'Backspace' && !tagInput && tags.length > 0) {
+      removeTag(tags[tags.length - 1])
+    }
+  }
+
   const handleRandomPrompt = () => {
     if (!prompts.length) return
     const p = prompts[Math.floor(Math.random() * prompts.length)]
@@ -154,16 +181,12 @@ function EntryModal({ open, onClose, entry, onSave, prompts = [] }) {
   }
 
   const handleSave = () => {
-    const tags = tagsRaw
-      .split(',')
-      .map((t) => t.trim())
-      .filter(Boolean)
-
+    const finalTags = tagInput.trim() ? [...tags, tagInput.trim()] : tags
     onSave({
       ...(entry ?? {}),
       title: title.trim(),
       content: content.trim(),
-      tags,
+      tags: finalTags,
     })
   }
 
@@ -233,31 +256,63 @@ function EntryModal({ open, onClose, entry, onSave, prompts = [] }) {
           <div>
             <Label className="label-base flex items-center gap-1">
               <Tag size={11} />
-              Tags (komma-gescheiden)
+              Tags
             </Label>
-            <Input
-              className="input-base mt-1"
-              placeholder="bijv. werk, emotie, inzicht"
-              value={tagsRaw}
-              onChange={(e) => setTagsRaw(e.target.value)}
-            />
-            {tagsRaw && (
-              <div className="flex flex-wrap gap-1 mt-2">
-                {tagsRaw
-                  .split(',')
-                  .map((t) => t.trim())
-                  .filter(Boolean)
-                  .map((tag) => (
-                    <Badge
-                      key={tag}
-                      variant="outline"
-                      className="text-[10px] border-[#C97D3A]/40 text-[#C97D3A] bg-[#C97D3A]/5"
+
+            {/* Selected tags */}
+            {tags.length > 0 && (
+              <div className="flex flex-wrap gap-1 mb-2 mt-1">
+                {tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs bg-amber/10 border border-amber/30 text-amber font-body"
+                  >
+                    {tag}
+                    <button
+                      type="button"
+                      onClick={() => removeTag(tag)}
+                      className="hover:text-amber-dark ml-0.5"
                     >
-                      {tag}
-                    </Badge>
-                  ))}
+                      <X size={10} />
+                    </button>
+                  </span>
+                ))}
               </div>
             )}
+
+            {/* Input + suggestions dropdown */}
+            <div className="relative">
+              <Input
+                className="input-base"
+                placeholder="Typ of kies een tag…"
+                value={tagInput}
+                onChange={(e) => { setTagInput(e.target.value); setShowSuggestions(true) }}
+                onFocus={() => setShowSuggestions(true)}
+                onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
+                onKeyDown={handleTagKeyDown}
+              />
+              {showSuggestions && suggestions.length > 0 && (
+                <div
+                  className="absolute z-50 top-full mt-1 left-0 right-0 rounded-lg shadow-lg max-h-48 overflow-y-auto"
+                  style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)' }}
+                >
+                  {suggestions.map((tag) => (
+                    <button
+                      key={tag}
+                      type="button"
+                      onMouseDown={() => addTag(tag)}
+                      className="w-full text-left px-3 py-2 text-sm font-body hover:bg-amber/10 transition-colors"
+                      style={{ color: 'var(--text)' }}
+                    >
+                      {tag}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            <p className="text-[10px] mt-1 font-body" style={{ color: 'var(--text-40)' }}>
+              Druk Enter of komma om een tag toe te voegen
+            </p>
           </div>
         </div>
 
@@ -323,6 +378,13 @@ export default function Journal() {
   const [deleteTarget, setDeleteTarget] = useState(null)
 
   const prompts = settings?.journalPrompts ?? []
+
+  // All unique tags used across all journal entries
+  const allTags = useMemo(() => {
+    const set = new Set()
+    ;(journal ?? []).forEach((e) => (e.tags || []).forEach((t) => set.add(t)))
+    return [...set].sort()
+  }, [journal])
 
   // Filtered entries
   const filtered = useMemo(() => {
@@ -455,6 +517,7 @@ export default function Journal() {
         entry={null}
         onSave={handleSave}
         prompts={prompts}
+        allTags={allTags}
       />
 
       {/* Edit Modal */}
@@ -464,6 +527,7 @@ export default function Journal() {
         entry={editEntry}
         onSave={handleSave}
         prompts={prompts}
+        allTags={allTags}
       />
 
       {/* Delete Confirmation */}

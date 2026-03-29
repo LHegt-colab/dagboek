@@ -1,10 +1,12 @@
-import { NavLink, useLocation } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import {
   LayoutDashboard, BookOpen, Heart, Brain, Dumbbell, Zap,
   Users, FlameKindling, SunMedium, BarChart3, Settings, BookMarked,
+  Sun, Moon,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import useAppStore from '@/store/useAppStore'
 
 const navItems = [
   { to: '/', icon: LayoutDashboard, label: 'Dashboard', end: true },
@@ -21,16 +23,24 @@ const navItems = [
 ]
 
 export default function Sidebar() {
+  const { settings, updateSettings } = useAppStore()
+  const isDark = settings.theme === 'dark'
+
+  const toggleTheme = () => updateSettings({ theme: isDark ? 'light' : 'dark' })
+
   return (
-    <aside className="hidden lg:flex flex-col w-[var(--sidebar-width)] h-screen sticky top-0 bg-noir-900 border-r border-cream-200/[0.06] shrink-0">
+    <aside
+      className="hidden lg:flex flex-col w-[var(--sidebar-width)] h-screen sticky top-0 shrink-0"
+      style={{ backgroundColor: 'var(--nav-bg)', borderRight: '1px solid var(--nav-border)' }}
+    >
       {/* Logo */}
-      <div className="flex items-center gap-3 px-5 py-6 border-b border-cream-200/[0.06]">
+      <div className="flex items-center gap-3 px-5 py-6" style={{ borderBottom: '1px solid var(--nav-border)' }}>
         <div className="w-8 h-8 rounded-lg bg-amber/15 border border-amber/30 flex items-center justify-center">
           <BookMarked className="w-4 h-4 text-amber" />
         </div>
         <div>
-          <h1 className="font-display text-base font-semibold text-cream-200 leading-none">Dagboek</h1>
-          <p className="text-[10px] text-cream-200/30 font-body mt-0.5">Persoonlijk Inzicht</p>
+          <h1 className="font-display text-base font-semibold leading-none" style={{ color: 'var(--text)' }}>Dagboek</h1>
+          <p className="text-[10px] font-body mt-0.5" style={{ color: 'var(--text-40)' }}>Persoonlijk Inzicht</p>
         </div>
       </div>
 
@@ -51,9 +61,20 @@ export default function Sidebar() {
         </nav>
       </ScrollArea>
 
-      {/* Footer */}
-      <div className="px-5 py-4 border-t border-cream-200/[0.06]">
-        <p className="text-[10px] text-cream-200/20 font-body">v1.0.0 · Lokaal opgeslagen</p>
+      {/* Footer with theme toggle */}
+      <div
+        className="px-4 py-4 flex items-center justify-between"
+        style={{ borderTop: '1px solid var(--nav-border)' }}
+      >
+        <p className="text-[10px] font-body" style={{ color: 'var(--text-20)' }}>v1.0.0</p>
+        <button
+          onClick={toggleTheme}
+          className="w-8 h-8 flex items-center justify-center rounded-lg transition-colors hover:bg-amber/10"
+          title={isDark ? 'Schakel naar lichte modus' : 'Schakel naar donkere modus'}
+          style={{ color: 'var(--text-60)' }}
+        >
+          {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+        </button>
       </div>
     </aside>
   )

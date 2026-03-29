@@ -6,6 +6,19 @@ import { fetchAllFromSupabase, pushAllToSupabase } from './lib/supabaseSync'
 import Layout from '@/components/layout/Layout'
 import Login from './pages/Login'
 
+// Apply dark/light class to <html> whenever theme setting changes
+function ThemeSync() {
+  const theme = useAppStore((s) => s.settings.theme)
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark')
+    } else {
+      document.documentElement.classList.remove('dark')
+    }
+  }, [theme])
+  return null
+}
+
 // Lazy-load all route-level modules
 const Dashboard = lazy(() => import('@/modules/dashboard/Dashboard'))
 const Journal = lazy(() => import('@/modules/journal/Journal'))
@@ -92,6 +105,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
+        <ThemeSync />
         <AppRoutes />
       </AuthProvider>
     </BrowserRouter>
